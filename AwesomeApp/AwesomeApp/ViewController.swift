@@ -37,13 +37,27 @@ class ViewController: NSViewController {
     }
     
     func decode() {
+        let url = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask)
+
         do {
-            let strBase64 = try String(contentsOfFile: pickFile().path)
+            let path = pickFile().path
+            
+            if path == "nil" {
+                return
+            }
+            
+            let strBase64 = try String(contentsOfFile: path)
             let dataDecoded = NSData(base64Encoded: strBase64, options: NSData.Base64DecodingOptions(rawValue: 0))
             let decodedData = NSImage(data: dataDecoded! as Data)
+            
+            let pathOutImage = url[0].appendingPathComponent("out.png")
+            try dataDecoded?.write(to: pathOutImage, options: .noFileProtection)
+            
             imageView.image = decodedData
             base64ScrollView.documentView?.insertText(strBase64)
         } catch {
+            dialogOKCancel(messageText: "Alert", informativeText: error.localizedDescription)
+            
             print(error)
         }
     }
@@ -51,22 +65,34 @@ class ViewController: NSViewController {
     func encode() {
         let imageUrl = pickFile()
         
+        if imageUrl.path == "nil" {
+            return
+        }
+        
         let imageData = NSData.init(contentsOf: imageUrl)
         guard let strBase64 = imageData?.base64EncodedString(options: NSData.Base64EncodingOptions.init(rawValue: 0)) else {
             return
         }
-                
+        
         let url = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask)
         
         do {
             let path = url[0].appendingPathComponent("out.txt")
             try strBase64.write(to: path, atomically: true, encoding: .ascii)
             
-            imageView.image = NSImage.init(data: imageData! as Data)
-            base64ScrollView.documentView?.insertText(strBase64)
+            let image = NSImage.init(data: imageData! as Data)
             
-            print("Saved to: \(path)")
+            if image != nil {
+                imageView.image = image
+                base64ScrollView.documentView?.insertText(strBase64)
+                
+                print("Saved to: \(path)")
+            } else {
+                dialogOKCancel(messageText: "Alert", informativeText: "It's not an image")
+            }
         } catch {
+            dialogOKCancel(messageText: "Alert", informativeText: error.localizedDescription)
+            
             print(error)
         }
     }
@@ -82,7 +108,7 @@ class ViewController: NSViewController {
 
         if (dialog.runModal() == NSApplication.ModalResponse.OK) {
             guard let path = dialog.url else {
-                return URL.init(string: "file://")!
+                return URL.init(string: "nil")!
             }
             
             print("Picked: \(path)")
@@ -92,7 +118,16 @@ class ViewController: NSViewController {
             print("Cancelled")
         }
         
-        return URL.init(string: "file://")!
+        return URL.init(string: "nil")!
+    }
+    
+    func dialogOKCancel(messageText: String, informativeText: String) {
+        let alert = NSAlert()
+        alert.messageText = messageText
+        alert.informativeText = informativeText
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
     }
 }
 
