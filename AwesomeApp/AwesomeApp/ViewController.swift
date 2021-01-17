@@ -8,17 +8,18 @@
 import Cocoa
 
 class ViewController: NSViewController {
-
-    @IBOutlet weak var selectStringButton: NSButton!
-    @IBOutlet weak var selectImageButton: NSButton!
     
-    @IBOutlet weak var base64ScrollView: NSScrollView!
-    @IBOutlet weak var imageView: NSImageView!
+    @IBOutlet weak var optionsButton: NSPopUpButton!
+    @IBOutlet weak var mainImageView: DragImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.window?.setFrame(NSRect(x:0,y:0,width: 200,height: 200), display: true)
+        optionsButton.addItem(withTitle: "Base64 -> Image")
+        optionsButton.addItem(withTitle: "Image -> Base64")
+        
+        let tapGestureRecognizer = NSClickGestureRecognizer(target: self, action: #selector(ViewController.imageViewTapped))
+        mainImageView.addGestureRecognizer(tapGestureRecognizer)
     }
 
     override var representedObject: Any? {
@@ -26,14 +27,11 @@ class ViewController: NSViewController {
         // Update the view, if already loaded.
         }
     }
-
-
-    @IBAction func selectString(_ sender: Any) {
-        decode(pathToBase64: pickFile().path)
-    }
     
-    @IBAction func selectImage(_ sender: Any) {
-        encode(imageUrl: pickFile())
+    @objc func imageViewTapped(gesture: NSGestureRecognizer) {
+//        let tappedImage = gesture.view as! NSImageView
+        
+        runConvert(path: pickFile())
     }
     
     func decode(pathToBase64: String) {
@@ -51,10 +49,13 @@ class ViewController: NSViewController {
             let pathOutImage = url[0].appendingPathComponent("out.png")
             try dataDecoded?.write(to: pathOutImage, options: .noFileProtection)
             
-            imageView.image = decodedData
-            base64ScrollView.documentView?.insertText(strBase64)
+            mainImageView.image = decodedData
+            
+            dialog(messageText: "Result", informativeText: pathOutImage.path)
+            
+            print("Saved to: \(pathOutImage.path)")
         } catch {
-            dialogOKCancel(messageText: "Alert", informativeText: error.localizedDescription)
+            dialog(messageText: "Alert", informativeText: error.localizedDescription)
             
             print(error)
         }
@@ -79,15 +80,16 @@ class ViewController: NSViewController {
             let image = NSImage.init(data: imageData! as Data)
             
             if image != nil {
-                imageView.image = image
-                base64ScrollView.documentView?.insertText(strBase64)
+                mainImageView.image = image
                 
-                print("Saved to: \(path)")
+                dialog(messageText: "Result", informativeText: path.path)
+                
+                print("Saved to: \(path.path)")
             } else {
-                dialogOKCancel(messageText: "Alert", informativeText: "It's not an image")
+                dialog(messageText: "Alert", informativeText: "It's not an image")
             }
         } catch {
-            dialogOKCancel(messageText: "Alert", informativeText: error.localizedDescription)
+            dialog(messageText: "Alert", informativeText: error.localizedDescription)
             
             print(error)
         }
@@ -117,13 +119,26 @@ class ViewController: NSViewController {
         return URL.init(string: "nil")!
     }
     
-    func dialogOKCancel(messageText: String, informativeText: String) {
+    func dialog(messageText: String, informativeText: String) {
         let alert = NSAlert()
         alert.messageText = messageText
         alert.informativeText = informativeText
         alert.alertStyle = .warning
         alert.addButton(withTitle: "OK")
         alert.runModal()
+    }
+    
+    func runConvert(path: URL) {
+        let selectedOption = optionsButton.indexOfSelectedItem
+        
+        switch selectedOption {
+        case 0:
+            decode(pathToBase64: path.path)
+        case 1:
+            encode(imageUrl: path)
+        default:
+            print("No such an option")
+        }
     }
 }
 
