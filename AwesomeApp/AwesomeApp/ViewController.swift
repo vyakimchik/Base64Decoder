@@ -29,24 +29,22 @@ class ViewController: NSViewController {
 
 
     @IBAction func selectString(_ sender: Any) {
-        decode()
+        decode(pathToBase64: pickFile().path)
     }
     
     @IBAction func selectImage(_ sender: Any) {
-        encode()
+        encode(imageUrl: pickFile())
     }
     
-    func decode() {
+    func decode(pathToBase64: String) {
         let url = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask)
 
-        do {
-            let path = pickFile().path
-            
-            if path == "nil" {
+        do {            
+            if pathToBase64 == "nil" {
                 return
             }
             
-            let strBase64 = try String(contentsOfFile: path)
+            let strBase64 = try String(contentsOfFile: pathToBase64)
             let dataDecoded = NSData(base64Encoded: strBase64, options: NSData.Base64DecodingOptions(rawValue: 0))
             let decodedData = NSImage(data: dataDecoded! as Data)
             
@@ -62,9 +60,7 @@ class ViewController: NSViewController {
         }
     }
     
-    func encode() {
-        let imageUrl = pickFile()
-        
+    func encode(imageUrl: URL) {
         if imageUrl.path == "nil" {
             return
         }
@@ -78,7 +74,7 @@ class ViewController: NSViewController {
         
         do {
             let path = url[0].appendingPathComponent("out.txt")
-            try strBase64.write(to: path, atomically: true, encoding: .ascii)
+            try strBase64.write(to: path, atomically: true, encoding: .utf8)
             
             let image = NSImage.init(data: imageData! as Data)
             
