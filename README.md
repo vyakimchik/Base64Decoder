@@ -1,5 +1,5 @@
 # Base64 to Image & Vice versa
-This repository contains the source code of the application for macOS that allows you to convert base64 string to images and vice versa.
+This repository contains the source code of the application for macOS that allows you to convert base64 strings to images and vice versa.
 
 # How to run?
 1. Open `AwesomeApp.xcodeproj`.
