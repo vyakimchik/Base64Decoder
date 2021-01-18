@@ -9,6 +9,8 @@ import Cocoa
 
 class DragImageView: NSImageView {
     
+    var delegate: DragImageViewDelegate?
+    
     var expectedExt = ["jpg", "jpeg", "bmp", "png", "pdf", "txt"]
     let border = CAShapeLayer()
 
@@ -67,6 +69,10 @@ class DragImageView: NSImageView {
 
         print("File path: \(path)")
         
+        if let temp = self.delegate {
+            delegate?.runConvert(path: URL.init(string: path)!)
+        }
+        
         return true
     }
     
@@ -117,4 +123,8 @@ extension NSBezierPath {
         points.deallocate()
         return path
     }
+}
+
+protocol DragImageViewDelegate {
+    func runConvert(path: URL);
 }

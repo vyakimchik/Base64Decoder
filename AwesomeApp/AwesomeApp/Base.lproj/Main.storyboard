@@ -705,15 +705,15 @@
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="AwesomeApp" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="777" height="686"/>
+                    <view key="view" misplaced="YES" id="m2S-Jp-Qdl">
+                        <rect key="frame" x="0.0" y="0.0" width="777" height="685"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <stackView distribution="fillEqually" orientation="vertical" alignment="centerX" spacing="35" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KE2-VA-4nG">
-                                <rect key="frame" x="50" y="30" width="677" height="626"/>
+                                <rect key="frame" x="50" y="30" width="677" height="621"/>
                                 <subviews>
                                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LTf-CU-Zn2">
-                                        <rect key="frame" x="320" y="602" width="39" height="25"/>
+                                        <rect key="frame" x="320" y="597" width="39" height="25"/>
                                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="9D3-HC-5CG">
                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="menu"/>
@@ -721,7 +721,7 @@
                                         </popUpButtonCell>
                                     </popUpButton>
                                     <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="mFL-TD-Lhw" customClass="DragImageView" customModule="AwesomeApp" customModuleProvider="target">
-                                        <rect key="frame" x="83" y="59" width="512" height="512"/>
+                                        <rect key="frame" x="83" y="54" width="512" height="512"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="lessThanOrEqual" constant="512" id="ASW-eT-Ekx"/>
                                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="512" id="xPk-HN-4Il"/>
@@ -729,9 +729,9 @@
                                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="down-arrow-square" id="oV8-d0-kBz"/>
                                     </imageView>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AGT-dg-A1W">
-                                        <rect key="frame" x="-2" y="0.0" width="681" height="24"/>
-                                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" placeholderString="Drag and Drop a file that contains an image or click the image above to pick it" id="x4q-IB-Btv">
-                                            <font key="font" metaFont="system" size="20"/>
+                                        <rect key="frame" x="319" y="0.0" width="39" height="19"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" placeholderString="Text" id="x4q-IB-Btv">
+                                            <font key="font" metaFont="system" size="16"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
@@ -757,7 +757,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="hintLabel" destination="AGT-dg-A1W" id="OYC-Jt-c7Q"/>
+                        <outlet property="hintTextField" destination="AGT-dg-A1W" id="a2T-OP-KvV"/>
                         <outlet property="mainImageView" destination="mFL-TD-Lhw" id="22Q-jk-vSE"/>
                         <outlet property="optionsButton" destination="LTf-CU-Zn2" id="k8S-wD-nHI"/>
                     </connections>

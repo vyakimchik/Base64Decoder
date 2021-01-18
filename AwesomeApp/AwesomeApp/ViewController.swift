@@ -7,7 +7,7 @@
 
 import Cocoa
 
-class ViewController: NSViewController {
+class ViewController: NSViewController, DragImageViewDelegate {
     
     @IBOutlet weak var optionsButton: NSPopUpButton!
     @IBOutlet weak var mainImageView: DragImageView! {
@@ -16,12 +16,20 @@ class ViewController: NSViewController {
             mainImageView.image = image
         }
     }
+    @IBOutlet weak var hintTextField: NSTextField! {
+        didSet {
+            let str = "Drag and Drop a file that contains an image or click the image above to pick it. The result will be in the Downloads folder"
+            hintTextField.placeholderString = str
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         optionsButton.addItem(withTitle: "Base64 -> Image")
         optionsButton.addItem(withTitle: "Image -> Base64")
+        
+        mainImageView.delegate = self
         
         let tapGestureRecognizer = NSClickGestureRecognizer(target: self, action: #selector(ViewController.imageViewTapped))
         mainImageView.addGestureRecognizer(tapGestureRecognizer)
@@ -56,8 +64,6 @@ class ViewController: NSViewController {
             
             mainImageView.image = decodedData
             
-            dialog(messageText: "Result", informativeText: pathOutImage.path)
-            
             print("Saved to: \(pathOutImage.path)")
         } catch {
             dialog(messageText: "Alert", informativeText: error.localizedDescription)
@@ -86,8 +92,6 @@ class ViewController: NSViewController {
             
             if image != nil {
                 mainImageView.image = image
-                
-                dialog(messageText: "Result", informativeText: path.path)
                 
                 print("Saved to: \(path.path)")
             } else {
