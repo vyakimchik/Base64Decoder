@@ -71,8 +71,13 @@ class DragImageView: NSImageView {
         
         let finalPath = "file://" + path
         
-        if let temp = self.delegate {
-            delegate?.runConvert(path: URL(string: finalPath)!)
+        if self.delegate != nil {
+            guard let url = URL(string: finalPath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!) else {
+                print("performDragOperation: url is nil")
+                return false
+            }
+            
+            delegate?.runConvert(path: url)
         }
         
         return true
