@@ -10,7 +10,12 @@ import Cocoa
 class ViewController: NSViewController {
     
     @IBOutlet weak var optionsButton: NSPopUpButton!
-    @IBOutlet weak var mainImageView: DragImageView!
+    @IBOutlet weak var mainImageView: DragImageView! {
+        didSet {
+            let image = mainImageView.image?.tint(color: NSColor.gray)
+            mainImageView.image = image
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -142,3 +147,18 @@ class ViewController: NSViewController {
     }
 }
 
+extension NSImage {
+    func tint(color: NSColor) -> NSImage {
+        let image = self.copy() as! NSImage
+        image.lockFocus()
+
+        color.set()
+
+        let imageRect = NSRect(origin: NSZeroPoint, size: image.size)
+        imageRect.fill(using: .sourceAtop)
+
+        image.unlockFocus()
+
+        return image
+    }
+}
