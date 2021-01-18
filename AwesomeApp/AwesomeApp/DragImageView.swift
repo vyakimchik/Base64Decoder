@@ -11,7 +11,7 @@ class DragImageView: NSImageView {
     
     var delegate: DragImageViewDelegate?
     
-    var expectedExt = ["jpg", "jpeg", "bmp", "png", "pdf", "txt"]
+    var expectedExt = ["jpg", "jpeg", "bmp", "png", "pdf", "txt", "tif", "tiff"]
     let border = CAShapeLayer()
 
     required init?(coder: NSCoder) {
