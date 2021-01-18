@@ -69,8 +69,10 @@ class DragImageView: NSImageView {
 
         print("File path: \(path)")
         
+        let finalPath = "file://" + path
+        
         if let temp = self.delegate {
-            delegate?.runConvert(path: URL.init(string: path)!)
+            delegate?.runConvert(path: URL(string: finalPath)!)
         }
         
         return true
