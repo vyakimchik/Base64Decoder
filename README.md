@@ -6,5 +6,8 @@ This repository contains the source code of the application for macOS that allow
 2. Select the `AwesomeApp` scheme.
 3. Run it.
 
+# Author
+The app was written by [Vladislav Yakimchik](https://github.com/vyakimchik).
+
 # License
 This project is licensed under the terms of the MIT license. See the [LICENSE](LICENSE) file.
