@@ -22,6 +22,9 @@ class ViewController: NSViewController, DragImageViewDelegate {
             hintTextField.placeholderString = str
         }
     }
+    @IBOutlet weak var textAreaScrollView: NSScrollView!
+    @IBOutlet weak var copyToClipboardButton: NSButton!
+    @IBOutlet weak var saveButton: NSButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,15 +59,23 @@ class ViewController: NSViewController, DragImageViewDelegate {
             }
             
             let strBase64 = try String(contentsOfFile: pathToBase64)
-            let dataDecoded = NSData(base64Encoded: strBase64, options: NSData.Base64DecodingOptions(rawValue: 0))
-            let decodedData = NSImage(data: dataDecoded! as Data)
+            guard let dataDecoded = NSData(base64Encoded: strBase64, options: NSData.Base64DecodingOptions(rawValue: 0)) else {
+                print("decode: dataDecoded is nil")
+                return
+            }
+            let decodedData = NSImage(data: dataDecoded as Data)
             
-            let pathOutImage = url[0].appendingPathComponent("out.png")
-            try dataDecoded?.write(to: pathOutImage, options: .noFileProtection)
+            if saveButton.state == .on {
+                let pathOutImage = url[0].appendingPathComponent("out.png")
+                try dataDecoded.write(to: pathOutImage, options: .noFileProtection)
+                
+                print("Saved to: \(pathOutImage.path)")
+            }
+            
+            let textView = textAreaScrollView.documentView as! NSTextView
             
             mainImageView.image = decodedData
-            
-            print("Saved to: \(pathOutImage.path)")
+            textView.string = strBase64
         } catch {
             dialog(messageText: "Alert", informativeText: error.localizedDescription)
             
@@ -85,15 +96,20 @@ class ViewController: NSViewController, DragImageViewDelegate {
         let url = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask)
         
         do {
-            let path = url[0].appendingPathComponent("out.txt")
-            try strBase64.write(to: path, atomically: true, encoding: .utf8)
+            if saveButton.state == .on {
+                let path = url[0].appendingPathComponent("out.txt")
+                try strBase64.write(to: path, atomically: true, encoding: .utf8)
+                
+                print("Saved to: \(path.path)")
+            }
             
             let image = NSImage.init(data: imageData! as Data)
             
             if image != nil {
-                mainImageView.image = image
+                let textView = textAreaScrollView.documentView as! NSTextView
                 
-                print("Saved to: \(path.path)")
+                mainImageView.image = image
+                textView.string = strBase64
             } else {
                 dialog(messageText: "Alert", informativeText: "It's not an image")
             }
@@ -149,6 +165,45 @@ class ViewController: NSViewController, DragImageViewDelegate {
             print("No such an option")
         }
     }
+    
+    @IBAction func copyToClipboard(_ sender: Any) {
+        let textView = textAreaScrollView.documentView as! NSTextView
+        
+        let pasteboard = NSPasteboard.general
+        pasteboard.declareTypes([.string], owner: nil)
+        pasteboard.setString(textView.string, forType: .string)
+        
+        print("String copied to clipboard")
+    }
+    
+    @IBAction func process(_ sender: Any) {
+        let textView = textAreaScrollView.documentView as! NSTextView
+        let base64String = textView.string
+        
+        if !base64String.isEmpty {
+            do {
+                let url = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask)
+                
+                guard let dataDecoded = NSData(base64Encoded: base64String, options: NSData.Base64DecodingOptions(rawValue: 0)) else {
+                    print("process: dataDecoded is nil")
+                    return
+                }
+                let decodedData = NSImage(data: dataDecoded as Data)
+                
+                if saveButton.state == .on {
+                    let pathOutImage = url[0].appendingPathComponent("out.png")
+                    try dataDecoded.write(to: pathOutImage, options: .noFileProtection)
+                }
+                
+                mainImageView.image = decodedData
+            } catch {
+                dialog(messageText: "Alert", informativeText: error.localizedDescription)
+                
+                print(error)
+            }
+        }
+    }
+    
 }
 
 extension NSImage {
