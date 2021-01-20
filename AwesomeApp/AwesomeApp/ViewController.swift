@@ -67,7 +67,7 @@ class ViewController: NSViewController, DragImageViewDelegate {
             
             if saveButton.state == .on {
                 let pathOutImage = url[0].appendingPathComponent("out.png")
-                try dataDecoded.write(to: pathOutImage, options: .noFileProtection)
+                try dataDecoded.write(to: pathOutImage, options: NSData.WritingOptions.init(rawValue: 0))
                 
                 print("Saved to: \(pathOutImage.path)")
             }
@@ -192,7 +192,7 @@ class ViewController: NSViewController, DragImageViewDelegate {
                 
                 if saveButton.state == .on {
                     let pathOutImage = url[0].appendingPathComponent("out.png")
-                    try dataDecoded.write(to: pathOutImage, options: .noFileProtection)
+                    try dataDecoded.write(to: pathOutImage, options: NSData.WritingOptions.init(rawValue: 0))
                 }
                 
                 mainImageView.image = decodedData
