@@ -22,7 +22,12 @@ class ViewController: NSViewController, DragImageViewDelegate {
             hintTextField.placeholderString = str
         }
     }
-    @IBOutlet weak var textAreaScrollView: NSScrollView!
+    @IBOutlet weak var textAreaScrollView: NSScrollView! {
+        didSet {
+            textAreaScrollView.wantsLayer = true
+            textAreaScrollView.layer?.cornerRadius = 8
+        }
+    }
     @IBOutlet weak var copyToClipboardButton: NSButton!
     @IBOutlet weak var saveButton: NSButton!
     
